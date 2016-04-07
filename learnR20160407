@@ -1,0 +1,140 @@
+2016-04-05
+R语言实战
+capter4
+
+
+--描述统计量
+ mean / sum
+ sort() order() rank()
+ median()  na.rm=TRUE
+ percentile()
+ quantile (w,probs=seq(0,1,0.2))
+ var() sd() cov() cor()
+ 极差 = max(x)-min(x)
+ 标准误 =方差／n 开根号
+
+ data_outline <- function(x){
+   n <- length(x)
+   m <- mean(x)
+   v <- var(x)
+   s <- sd(x)
+   me <- median(x)
+   cv <- 100*s/m
+   css <- sum((x-m)^2)
+   uss <- sum(x^2)
+   R <-  max(x)-min(x)
+   R1 <- quantile(x,3/4)-quantile(x,1/4)
+   sm <- s/sqrt(n)
+   g1 <- n/((n-1)*(n-2))*sum((x-m)^3)/s^3
+   g2 <- ((n*(n+1))/((n-1)*(n-2)*(n-3))*sum((x-m)^4)/s^4
+          - (3*(n-1)^2)/((n-2)*(n-3)))
+   data.frame(N=n, Mean=m, Var=v, std_dev=s, Median=me,
+        std_mean=sm, CV=cv, CSS=css, USS=uss, R=R,
+        R1=R1, Skewness=g1, Kurtosis=g2, row.names=1)
+}
+
+
+--数据分布
+
+dnorm(x, mean=0, sd=1, log = FALSE)
+pnorm(q, mean=0, sd=1, lower.tail = TRUE, log.p = FALSE)
+qnorm(p, mean=0, sd=1, lower.tail = TRUE, log.p = FALSE)
+rnorm(n, mean=0, sd=1)
+
+dpois(x, lambda, log = FALSE)
+ppois(q, lambda, lower.tail = TRUE, log.p = FALSE)
+qpois(p, lambda, lower.tail = TRUE, log.p = FALSE)
+rpois(n, lambda)
+
+hist(x)
+density()
+
+
+w <- c(75.0, 64.0, 47.4, 66.9, 62.2, 62.2, 58.7, 63.5,66.6, 64.0, 57.0, 69.0, 56.9, 50.0, 72.0)
+hist(w, freq=FALSE)
+lines(density(w),col="blue")
+x<-44:76
+lines(x, dnorm(x, mean(w), sd(w)), col="red")
+
+ecdf(x)
+
+w <- c(75.0, 64.0, 47.4, 66.9, 62.2, 62.2, 58.7, 63.5,66.6, 64.0, 57.0, 69.0, 56.9, 50.0, 72.0)
+plot(ecdf(w),verticals = TRUE, do.p = FALSE)
+x<-44:78
+lines(x, pnorm(x, mean(w), sd(w)))
+
+qq图
+w <- c(75.0, 64.0, 47.4, 66.9, 62.2, 62.2, 58.7, 63.5,66.6, 64.0, 57.0, 69.0, 56.9, 50.0, 72.0)
+qqnorm(w); qqline(w)
+
+茎叶图
+
+x<-c(25, 45, 50, 54, 55, 61, 64, 68, 72, 75, 75, 78, 79, 81, 83, 84, 84, 84, 85, 86, 86, 86, 87, 89, 89, 89, 90, 91, 91, 92, 100)
+stem(x,scale=1,width=80,atom=1e-08)
+
+boxplot(formula,data=NULL,...,subset,na.action=NULL)
+
+boxplot(x, ..., range = 1.5, width = NULL, varwidth = FALSE, notch = FALSE, outline = TRUE, names, plot = TRUE,border = par("fg"), col = NULL, log = "",pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5), horizontal = FALSE, add = FALSE, at = NULL)
+
+箱形图
+
+A<-c(79.98,80.04,80.02,80.04,80.03,80.03,80.04,79.97,80.05,80.03,80.02,80.00,80.02)
+
+B<-c(80.02,79.94,79.98,79.97,79.97,80.03,79.95,79.97)
+boxplot(A,B,notch=T,names=c('A','B'),col=c(2,3))
+
+五数总括
+fivenum()
+
+x<-c(25,45,50,54,55,61,64,68,72,75,75,78,79,81,83,84,84,84,85,86,86,86,87,89,89,89,90,91,91,92,100)
+fivenum(x)
+
+正态性检验
+shaprio.test()
+
+经验分布 kolmogorov－smirnov 检验
+x<- rt(100,5)
+ks.test(x,"pf",2,5)
+
+plot() plot(x,y),plot(x),plot(f,y),plot(df) plot(~ expr) plot(y ~expr)
+
+y<-c(1600,1610,1650,1680,1700,1700,1780,1500,1640,1400,1700,1750,1640,1550,1600,1620,1640,1600,1740,1800,1510,1520,1530,1570,1640,1600)
+f<-factor(c(rep(1,7),rep(2,5),rep(3,8),rep(4,6)))
+plot(f,y)
+
+df<-data.frame(
+  Age=c(13, 13, 14, 12, 12, 15, 11, 15, 14, 14, 14, 15,
+        12, 13, 12, 16, 12, 11, 15 ),
+  Height=c(56.5, 65.3, 64.3, 56.3, 59.8, 66.5, 51.3,
+           62.5, 62.8, 69.0, 63.5, 67.0, 57.3, 62.5,
+           59.0, 72.0, 64.8, 57.5, 66.5),
+  Weight=c( 84.0,  98.0,  90.0,  77.0,  84.5, 112.0,
+            50.5, 112.5, 102.5, 112.5, 102.5, 133.0,
+            83.0,  84.0,  99.5, 150.0, 128.0,  85.0,
+           112.0)
+);
+plot(df)
+attach(df)
+plot(~Age+Height)
+plot(Weight~Age+Height)
+
+z
+显示多变量数据
+pairs(df)
+coplot(Weight ~ Height | Age)
+
+显示图形
+ qqnorm(x) ,qqline(x) ,qqplot(x,y)
+ hist(x),hist(x,nclass=n) ,hist(x,break=b,...)
+ dotchart(x,...)
+ image(x,y,z,...),contour(x,y,z) ,persp(x,y,z,...)
+
+三维图形
+x<-seq(0,2800, 400); y<-seq(0,2400,400)
+z<-scan()
+1180 1320 1450 1420 1400 1300  700  900 1230 1390 1500 1500 1400  900 1100 1060 1270 1500 1200 1100 1350 1450 1200 1150 1370 1500 1200 1100 1550 1600 1550 1380 1460 1500 1550 1600 1550 1600 1600 1600 1450 1480 1500 1550 1510 1430 1300 1200 1430 1450 1470 1320 1280 1200 1080  940
+
+Z<-matrix(z, nrow=8)
+image(x, y, Z)
+contour(x, y, Z, levels = seq(min(z), max(z), by = 80))
+persp(x, y, Z)
